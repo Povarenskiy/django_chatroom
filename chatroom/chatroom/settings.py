@@ -45,8 +45,8 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_REDIRECT_URL = 'enter'
-LOGOUT_REDIRECT_URL = 'enter'
+LOGIN_REDIRECT_URL = 'chatroom'
+LOGOUT_REDIRECT_URL = 'chatroom'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

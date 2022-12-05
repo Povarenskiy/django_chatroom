@@ -13,13 +13,13 @@ body {
     margin: 0 auto;
     background-color: #09597d;
     opacity: 0.8;
-    
 }
+
 
 .header_inner {
     display: flex;
-    margin: 0;
-    height: 10vh;
+
+    height: 8vh;
     justify-content: space-between;
     align-items: center;
 }
@@ -28,7 +28,7 @@ body {
 .nav_link {
     display: inline-block;
     /* font-family: cursive; */
-    margin: 10px;
+    margin: 20px;
     color: azure;
 }
 
@@ -36,11 +36,52 @@ body {
     font-size: 30px;
     font-weight: 700;
     color: azure;
+    margin: 20px;
 }
+
+
+.full-window {
+    display: flex;
+}
+
+
+.left-bar {
+    width: 40vh; 
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.add-chatroom {
+    margin: 10px auto;
+    padding: 15px;
+    background-color: #d6e9c6;
+    border: 0px solid rgba(10, 111, 132, 0.667);
+    border-radius: 30px;
+
+}
+
+.chatroom-item {
+    margin: 2px;
+    margin-left: 5px;
+    padding: 25px;
+    border: 0px solid rgba(10, 111, 132, 0.667);
+    border-radius: 10px;
+
+    background-color: #d6e9c6;
+
+}
+
+
+.right-bat {
+    flex: 1;
+    justify-content: center;
+}
+
 
 .container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 800px;
     margin: 0 auto;
     
 }
@@ -48,7 +89,7 @@ body {
 .chat {
     display: flex;
     flex-direction: column;
-    height: 85vh;
+    height: 92vh;
     justify-content: space-around;
 
 }
@@ -68,7 +109,7 @@ body {
 }
 
 
-.message-in, .message-out {
+.message {
     width:fit-content;
     margin: 10px;
     padding: 15px;
@@ -78,11 +119,11 @@ body {
     background-color: #dff0d8;
 }
 
-.message-out {
+.out {
     align-self: flex-end; 
 }
 
-.message-in {
+.in {
     align-self: flex-start; 
 }
 
