@@ -1,16 +1,20 @@
-import json
-
 from django.shortcuts import render, redirect
-from websocket_app.models import ChatRoom
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.list import ListView
 from django.urls import reverse
+from django.views import View
+from websocket_app.models import ChatRoom
 
-def enter(request):
-    return render(request, 'websocket_app/enter.html', {})
+from users.models import User 
 
 
-def chatroom(request):
-    if request.user.is_authenticated:
+class ChatRoomView(LoginRequiredMixin, View):
+
+    template_name = 'websocket_app/chatroom.html'
+
+    def get(self, request):
         chatrooms = ChatRoom.objects.filter(users=request.user).all()
+        
         data = []
         for room in chatrooms:
             room_users = []
@@ -18,13 +22,25 @@ def chatroom(request):
                 if user != request.user:
                     room_users.append(user.username)
 
-            room_users = '; '.join(room_users)
+            room_users = ' + '.join(room_users)
             data.append({'room_name': room.room_name, 'room_users': room_users}) 
 
-        return render(request, 'websocket_app/chatroom.html', {'data': data})
-    else:
-        return redirect(reverse('login'))
+        return render(request, self.template_name, {'data': data})
 
-def create(request):
+
+
+class CreateView(LoginRequiredMixin, ListView):
+
+    model = User
+    template_name = 'websocket_app/create.html'
+
+    def post(self, request):
+        chatroom = ChatRoom.objects.create(room_name='Chatroom')
+        for username in request.POST.getlist('submit-users'):
+            if username:
+                user = User.objects.get(username=username)
+                chatroom.users.add(user)
+        chatroom.users.add(request.user)
+        return redirect(reverse('chatroom'))
+
     
-    return render(request, 'websocket_app/create.html', {})

@@ -1,11 +1,11 @@
-{% extends 'websocket_app/mainpage.html' %}
+{% extends 'websocket_app/header.html' %}
 
 {% block content %}
 
 
 <div class="full-window">
     <div class="left-bar">
-        <a href="{% url 'create_chatroom' %}" class="add-chatroom">+ Добавить чат</a>
+        <a href="{% url 'create' %}" class="add-chatroom">+ Добавить чат</a>
         {% for room in data %}
             <input class="chatroom-item" type="button" id="{{ room.room_name }}" onclick="getroom(this.id)" value="{{ room.room_users }}">
         {% endfor %}
@@ -25,10 +25,6 @@
 
 <script>
         
-    // document.querySelector('.add-chatroom').onclick = function(e) {
-    //     window.location.host 
-    // };
-
     function getroom(roomName) {
         
         document.querySelectorAll(".in, .out").forEach(el => el.remove())
