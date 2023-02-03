@@ -1,10 +1,10 @@
 from django.urls import path 
 
-from websocket_app.views import ChatRoomView, CreateView
-from . import views 
+from websocket_app.views import *
 
 
 urlpatterns = [
-    path('', ChatRoomView.as_view(), name='chatroom'),
+    path('', HomeView.as_view(), name='home'),
     path('create/', CreateView.as_view(), name='create'),
+    path('get-chatrooms/', ChatRoomsView.as_view(), name='chatrooms'),
 ]

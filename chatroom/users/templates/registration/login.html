@@ -1,18 +1,10 @@
-{% extends 'websocket_app/header.html' %}
+{% if form.errors %}
+    <p>{{ form.errors.error }}</p>
+{% endif %}
 
-{% block content %}
-
-    {% if form.errors %}
-        <p>{{ form.errors.error }}</p>
-    {% endif %}
-
-    <form action="{% url 'login' %}" method="post">
-        {{ form }}
-        {% csrf_token %}
-        <button tupe="submit">Войти</button>
-    </form>
+<form action="{% url 'login' %}" method="post">
+    {{ form }}
+    {% csrf_token %}
+    <button tupe="submit">Войти</button>
+</form>
     
-</body>
-</html>
-
-{% endblock %}
