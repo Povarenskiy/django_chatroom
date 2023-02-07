@@ -10,7 +10,7 @@
 
 
 Интерфейс:
-![Image alt](https://github.com/Povarenskiy/task_geodata/blob/main/interface.png)
+![Image alt](https://github.com/Povarenskiy/django_chatroom/blob/main/interface.png)
 
 
 
