@@ -1,0 +1,224 @@
+{% extends 'websocket_app/chatroom.html' %}
+
+{% block header %}
+<div class="col-4">
+  <div class="text-center fs-4">ChatRoom</div>
+</div>
+<div class="col-4">
+  <div class="row justify-content-center">
+  {% if user.is_authenticated %}
+    <a class="col-2 text-left p-2" href="{% url 'logout' %}">Выход</a>
+  {% else %}
+    <a class="col-2 text-center p-2" href="{% url 'register' %}">Регистрация</a>
+    <a class="col-2 text-center p-2" href="{% url 'login' %}">Вход</a>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block navigation %}
+  <div class="d-grid gap-2">
+    <a href="{% url 'chatroom' %}" class="btn btn-dark p-2 mt-3 rounded-0 text-start"><i class="m-2 bi-grid-1x2"></i> Главная</a>
+    <a href="#" class="btn btn-dark p-2 rounded-0 text-start"><i class="m-2 bi-caret-right"></i> Профиль</a>
+    
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="btn btn-dark p-2 rounded-0 text-start"><i class="m-2 bi-caret-left"></i> Выход</a>
+    {% else %}
+    {% endif %}
+  </div>
+
+{% endblock%}
+
+
+{% block rooms %}
+
+<div class="d-flex m-2 justify-content-between">
+  <div class="p-2 text-dark" id="chatroom-count"></div>
+  <a class="btn btn-primary" href="{% url 'create' %}" role="button">Добавить чат</a>
+</div>
+<div class="d-flex p-2 mb-2">
+  <input class="form-control form-control-sm bi-serach" type="text" placeholder="Поиск">
+</div>
+<div class="d-flex m-0 p-0 flex-column" id='chat-rooms'></div>
+{% endblock%}
+
+
+{% block chatinfo %}
+<div class="p-2 text-dark" id="room-name"></div>
+{% endblock %}
+
+
+{% block chatlog %}
+<div class="container h-100" >
+  <div class="d-flex flex-column-reverse h-100" id="chat-log" style="overflow-y: scroll;"></div>   
+</div>
+{% endblock %}
+
+
+{% block chatinput %}
+  <div class="d-flex mb-4">
+    <input class="form-control m-2 p-1" placeholder='Текст сообщения' id="chat-message-input"></input>
+    <button class="btn btn-primary rounded-circle m-2" type="button" id="chat-message-submit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 18 18">
+        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+      </svg>
+    </button>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+window.roomSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat-rooms/" 
+  );
+
+window.roomSocket.onmessage = function (e) {
+  data = JSON.parse(e.data)
+  if (document.getElementById(data.room_id)) removeID(data.room_id);
+  addChatRoomRoom(data);
+  document.getElementById('chatroom-count').innerHTML = `Чатов (${document.getElementById('chat-rooms').childElementCount})`;
+}
+  
+window.roomSocket.onclose = function (e) {
+  console.log("The old websocket connection for rooms is closed");
+};
+
+window.roomSocket.addEventListener("open", (event) => {
+  console.log("The new websocket for rooms connection is open");
+}); 
+
+        
+function removeID(_id ){ 
+    var e=document.getElementById(_id);
+    if(e) e.remove();
+}
+
+        
+function newSocketChatlogConnection(id, name) {
+    
+  if (window.chatSocket) {
+    window.chatSocket.close();
+    clearChatlog();
+  };
+  
+  document.querySelector('#room-name').textContent = name;
+  if (document.querySelector(`#btn_${id}`)) removeID(`btn_${id}`);
+
+  window.chatSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat-log/" + id + "/"
+  );
+  window.chatSocket.onmessage = function (e) {
+    addChatlogMessage(JSON.parse(e.data))
+  };
+  window.chatSocket.onclose = function (e) {
+    console.log("The old websocket connection is closed");
+  };
+  window.chatSocket.addEventListener("open", (event) => {
+    console.log("The new websocket connection is open");
+  }); 
+}
+
+function addChatRoomRoom(data) {
+  let room = document.createElement("div");
+  room.className = "btn btn-light shadow-sm rounded-0 room-btn border-top";
+  room.id = data.room_id
+  room.name = data.room_name
+  room.onclick = function (e) {
+    newSocketChatlogConnection(this.id, this.name);
+  };
+
+  room.innerHTML = `
+  <div class="row">
+    <div class="col-8">
+      <div class="d-flex flex-column align-items-start">
+        <div class="h6">${data.room_name}</div>
+        <div class="text-center text-dark">${data.last_message}</div>
+      </div>
+    </div>
+    ${data.notification ? (
+      `<div class="col-2 m-auto">
+        <button class="btn btn-outline-primary btn-sm rounded-circle" id="btn_${data.room_id}">${data.notification}</button>
+      </div>`)
+      : ''}
+    </div>`;    
+  document.querySelector('#chat-rooms').prepend(room)
+};
+
+function addChatlogMessage(data) {
+  last_message_block = document.querySelector("#chat-log").firstChild;
+
+  if (!last_message_block) {
+    createChatLogMessageBlock(data)
+    return
+  }
+
+  if (last_message_block.id == data.user) {
+    addChatLogMessageBlock(last_message_block, data)
+  } else {
+    createChatLogMessageBlock(data)
+  };
+};
+
+function addChatLogMessageBlock(target, data) {
+  target.querySelector("#chat-log-message-block").innerHTML += `
+      <div class="d-flex flex-column m-2 rounded-2 bg-light shadow-sm">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="h6 m-0 p-2">${data.user}</div>
+          <div class="text-muted p-2 fs-10">
+            <small>${data.message_time}</small>
+          </div>
+        </div>
+        <div class="p-2">${data.message_text}</div>
+      </div>
+    `
+}
+
+function createChatLogMessageBlock(data) {
+  let message_block = document.createElement("div")
+  message_block.className = "d-flex ";
+  message_block.className += (data.user === "{{ user }}") ? "align-self-end justify-content-end" : "align-self-start justify-content-start";
+  message_block.style = "width:fit-content; max-width: 75%;"
+  message_block.id = data.user
+
+  let message_block_message = document.createElement("div")
+  message_block_message.id = "chat-log-message-block"
+  message_block_message.className = "d-flex flex-column";
+  
+  
+  let message_block_picture = document.createElement("div")
+  message_block_picture.width = message_block_picture.height = 40 
+  
+  message_block_picture.className = "align-self-end m-2";
+  if (data.profile_picture) {
+    message_block_picture.innerHTML =  `<div class="btn btn-primary rounded rounded-circle p-0" style="height:40px; width:40px;"><img class="img-fluid rounded rounded-circle m-0 p-0" style="width: 100%; height: 100%; object-fit: cover;" src="/images/profile_pic/user_2.png"></div>`
+  } else {
+    message_block_picture.innerHTML = `<div class="btn btn-primary rounded rounded-circle">${data.user[0].toUpperCase()}</div>`
+  }
+
+  let message = document.createElement("div")
+  message.innerHTML = `
+    <div class="d-flex flex-column m-2 rounded-2 bg-light shadow-sm">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="h6 m-0 p-2">${data.user}</div>
+        <div class="text-muted p-2 fs-10"><small>${data.message_time}</small></div>
+      </div>
+      <div class="p-2">${data.message_text}</div>
+    </div>
+  `; 
+      
+  message_block_message.append(message)
+  message_block.append(message_block_message)
+  data.user == "{{ user }}"  ? message_block.append(message_block_picture) : message_block.prepend(message_block_picture);
+  document.querySelector("#chat-log").prepend(message_block);
+
+}
+
+function clearChatlog() {
+  document.querySelector("#chat-log").innerHTML = "";
+};
+
+
+</script>
+{% endblock %}

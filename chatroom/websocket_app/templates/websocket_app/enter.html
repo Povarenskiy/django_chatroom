@@ -1,0 +1,36 @@
+{% extends 'websocket_app/base.html' %}
+
+{% block content %}
+<div class="container h-100">
+    <div class="row h-100">
+        <div class="col-6 m-auto text-center border rounded-4 shadow">
+            <div class="display-2 m-5">ChatRoom</div>
+            <hr>
+            <div class="h4 m-4">Для продолжения необходимо войти</div>
+
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+     
+            </form>
+
+
+            <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">У меня уже есть аккаунт</button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Зарегистрироваться</button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button>
+
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                aw
+            </div>
+
+            <div class="collapse multi-collapse" id="multiCollapseExample2">
+                aw 2
+            </div> -->
+
+           
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

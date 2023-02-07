@@ -48,8 +48,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = 'chatroom'
+LOGOUT_REDIRECT_URL = 'enter'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
