@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 from datetime import datetime 
+from channels.db import database_sync_to_async
 
 
 class ChatRoom(models.Model):
@@ -8,8 +9,10 @@ class ChatRoom(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     last_update = models.DateTimeField(null=True, blank=True, default=None)
 
+    @database_sync_to_async
     def get_last_message(self):
-        return self.message_set.order_by('-create').first()
+        message = self.message_set.order_by('-create').first()
+        return message.text if message else None
 
 
 

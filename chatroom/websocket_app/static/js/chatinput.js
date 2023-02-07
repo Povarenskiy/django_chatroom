@@ -12,8 +12,8 @@ var message = messageInputDom.value;
 window.chatSocket.send(
   JSON.stringify({
     message: message,
-    user: "{{ user }}",
   })
 );
 messageInputDom.value = "";
 };
+

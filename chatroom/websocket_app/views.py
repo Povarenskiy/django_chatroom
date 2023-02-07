@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic import CreateView
+from django.urls import reverse_lazy
 from .forms import CreateChatForm
 
 from websocket_app.models import ChatRoom, Notification
@@ -41,6 +42,6 @@ class CreateView(LoginRequiredMixin, PassRequestToFormViewMixin, CreateView):
     """
     template_name = 'websocket_app/create.html'
     form_class = CreateChatForm
-    success_url = 'home'
+    success_url = reverse_lazy('home')
 
 
