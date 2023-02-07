@@ -1,6 +1,10 @@
 html, body {
-    height: 100vh; 
+    height: 100vh;
+    background-image: url(/static/backgrounds/login.jpg); 
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
 }
+
 
 /* ---------- Скрол ---------- */
 ::-webkit-scrollbar {

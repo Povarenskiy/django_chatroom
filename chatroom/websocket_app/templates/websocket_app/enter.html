@@ -1,36 +1,33 @@
-{% extends 'websocket_app/base.html' %}
+{% extends 'websocket_app/base.html' %} {% block content %}
 
-{% block content %}
-<div class="container h-100">
-    <div class="row h-100">
-        <div class="col-6 m-auto text-center border rounded-4 shadow">
-            <div class="display-2 m-5">ChatRoom</div>
-            <hr>
-            <div class="h4 m-4">Для продолжения необходимо войти</div>
+<div class="container-fluid h-100 bg-transparent">
+  <div class="row h-100">
+    <div class="col-3 m-auto text-center border rounded-4 shadow p-4 bg-white">
+      <div class="display-4 m-4">ChatRoom</div>
+      <hr>
 
-            <form action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-     
-            </form>
-
-
-            <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">У меня уже есть аккаунт</button>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Зарегистрироваться</button>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button>
-
-            <div class="collapse multi-collapse" id="multiCollapseExample1">
-                aw
-            </div>
-
-            <div class="collapse multi-collapse" id="multiCollapseExample2">
-                aw 2
-            </div> -->
-
-           
+      <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        
+        <div class="text-start m-2">
+            <label for="id_username" class="m-2">Логин</label>
+            <input class="textinput textInput form-control" type="text" name="username" maxlength="150" placeholder="Введите логин"  id="id_username"/>
+        </div>
+        
+        <div class="text-start m-2">
+            <label for="id_password" class="m-2">Пароль</label>
+            <input class="textinput textInput form-control" type="password" name="password" autocomplete="current-password" placeholder="Введите пароль"  id="id_password"/>
+        </div>
+        <hr class="mt-4">
+        <div class="m-2 mt-4">
+            <button class="btn btn-primary w-100 rounded-5" type="submit">Войти</button>
+        </div>
+    </form>
+        <div class="m-2 mt-4 mb-3">
+            <a href="{% url 'register' %}" class="link-primary">Регистрация</a>
         </div>
     </div>
+  </div>
 </div>
-
-
 
 {% endblock %}
