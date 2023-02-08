@@ -101,7 +101,8 @@ class RoomsConsumers(AsyncWebsocketConsumer):
                 'room_id': chatroom.id, 
                 'room_name': chatroom.name, 
                 'notification': await chatroom.notification_set.filter(user=self.auth_user).acount(),
-                'last_message':  await chatroom.get_last_message()
+                'last_message':  await chatroom.get_last_message(),
+                'last_message_time': chatroom.last_update.strftime(settings.MESSAGE_TIME_FORMAT)
             }))
 
 

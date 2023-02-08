@@ -35,7 +35,7 @@
   <div class="p-2 text-dark" id="chatroom-count"></div>
   <a class="btn btn-outline-primary" href="{% url 'create' %}" role="button">Добавить комнату</a>
 </div>
-<div class="d-flex p-2 mb-2">
+<div class="p-2 mb-2">
   <input class="form-control form-control-sm bi-serach" type="text" placeholder="Поиск">
 </div>
 <div class="d-flex m-0 p-0 flex-column" id='chat-rooms'></div>
@@ -129,17 +129,20 @@ function addChatRoomRoom(data) {
   };
 
   room.innerHTML = `
-  <div class="row">
-    <div class="col-8">
+  <div class="row justify-content-around">
+    <div class="col">
       <div class="d-flex flex-column align-items-start">
         <div class="h6">${data.room_name}</div>
         <div class="text-center text-dark">${data.last_message}</div>
       </div>
     </div>
+    <div class="col-3">
+      <div class="d-flex flex-column text-center">
+      <div class="align-self-start text-muted m-auto">${data.last_message_time}</div>
     ${data.notification ? (
-      `<div class="col-2 m-auto">
-        <button class="btn btn-outline-primary btn-sm rounded-circle" id="btn_${data.room_id}">${data.notification}</button>
-      </div>`)
+        `<div class="text-primary" id="btn_${data.room_id}">*${data.notification}</div>
+      </div>
+    </div>`)
       : ''}
     </div>`;    
   document.querySelector('#chat-rooms').prepend(room)
