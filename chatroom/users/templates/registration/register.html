@@ -1,40 +1,41 @@
 {% extends 'websocket_app/base.html' %} {% block content %}
-{% load crispy_forms_tags %}
 <div class="container-fluid h-100 bg-transparent">
   <div class="row h-100">
-    <div class="col-3 m-auto text-center border rounded-4 shadow p-4 bg-white">
-      <div class="display-4 m-4">ChatRoom</div>
-      <hr>
+    <div class="col-3 m-auto border rounded-4 shadow p-4 bg-white">
+      <div class="display-4 m-4 text-center">ChatRoom</div>
+      <hr />
+      <div class="h5 m-2 text-center">Регистрация</div>
+      <hr />
       <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
-        <div class="d-flex flex-column">
-
-            {{ form|crispy }}
+        <div class="m-2">
+          <label class="m-2" for="{{ form.username.id_for_label }}">Логин</label>
+          {{ form.username }}
+          <div class="m-2 font-weight-bold text-danger">
+            {{ form.username.errors }}
+          </div>
+         </div>
+        <div class="m-2">
+          <label class="m-2" for="{{ form.password1.id_for_label }}">Пароль</label>
+          {{ form.password1 }}
+          <div class="font-weight-bold text-danger">
+            {{ form.password1.errors }}
+          </div>
         </div>
-        <!-- <div class="text-start m-2">
-            <label for="id_username">Логин</label>
-            <input class="textinput textInput form-control" type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus="" required="" id="id_username">
+        <div class="m-2 mb-4">
+          {{ form.password2 }}
+          <div class="m-2 font-weight-bold text-danger">
+            {{ form.password2.errors }}
+          </div>
         </div>
-        <div class="text-start m-2">
-            <label for="id_password1">Пароль</label>
-            <input class="textinput textInput form-control" type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
-        </div>
-        <div class="text-start m-2">
-            <label for="id_password2">Подтвердите пароль</label>
-            <input type="password" name="password2" autocomplete="new-password" class="textinput textInput form-control mb-4" id="id_password2">
-        </div>        
-        <hr> -->
+        <hr />
         <div class="m-2 mt-4">
-            <button class="btn btn-primary w-100 rounded-5" type="submit">Регистрация</button>
+          <button class="btn btn-primary w-100 rounded-5" type="submit">
+            Регистрация
+          </button>
         </div>
-    </form>
+      </form>
     </div>
   </div>
 </div>
 {% endblock %}
-
-
-
-
-
-

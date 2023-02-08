@@ -11,8 +11,8 @@ class User(AbstractUser):
         return self.username
 
     def save(self, *args, **kwargs):
-        Profile.objects.get_or_create(user=self)    
         super(User, self).save(*args, **kwargs)
+        Profile.objects.get_or_create(user=self)    
     
     @database_sync_to_async
     def get_profile_picture_url(self):

@@ -1,20 +1,48 @@
-{% extends 'websocket_app/base.html' %}
+{% extends 'websocket_app/base.html' %} {% block content %}
 
-{% block content %}
-{% load crispy_forms_tags %}
+<div class="container-fluid h-100 bg-transparent">
+  <div class="row h-100">
+    <div class="col-3 m-auto border rounded-4 shadow p-4 bg-white">
+      <div class="display-4 m-4 text-center">ChatRoom</div>
+      <hr>
+      <div class="h5 text-center">Вход</div>
+      <hr>
 
-{% if form.errors %}
-    <p>{{ form.errors.error }}</p>
-{% endif %}
-
-<div class="container w-50">
-
-    <form action="{% url 'login' %}" method="post">
-        {{ form|crispy }}
-        
+      <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
-        <button tupe="submit">Войти</button>
+        <div class="m-2">
+            <label class="m-2" for="{{ form.username.id_for_label }}">Логин</label>
+            {{ form.username }}
+            <div class="m-2 font-weight-bold text-danger">
+             {{ form.username.errors }}
+            </div>
+        </div>
+        <div class="m-2">
+            <label class="m-2" for="{{ form.password.id_for_label }}">Пароль</label>
+            {{ form.password }}
+            <div class="m-2 font-weight-bold text-danger">
+              {{ form.password.errors }}
+            </div>    
+        </div>
+
+        <div class="m-2 font-weight-bold text-danger">
+            {{ form.non_field_errors }}
+        </div>    
+        <hr class="mt-4">
+        <div class="m-2 mt-4">
+            <button class="btn btn-primary w-100 rounded-5" type="submit">Войти</button>
+        </div> 
     </form>
-    
+        <div class="m-2 mt-4 mb-3 text-center">
+            <a href="{% url 'register' %}" class="link-primary ">Регистрация</a>
+        </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
+
+
+
+
+

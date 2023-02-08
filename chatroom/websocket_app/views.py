@@ -7,16 +7,9 @@ from users.forms import UserCreationForm
 from websocket_app.models import ChatRoom, Notification
 
 
-class EnterView(TemplateView):
-    """Отображение старницы входа"""
-    template_name = 'websocket_app/enter.html'
-
-
 class ChatRoomView(LoginRequiredMixin, TemplateView):
     """Отображение главной старницы"""
     template_name = 'websocket_app/chatroom_extend.html'
-
-
 
 
 class CreateView(LoginRequiredMixin, CreateView):
