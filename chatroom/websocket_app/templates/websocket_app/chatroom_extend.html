@@ -67,67 +67,30 @@
 
 
 {% block js %}
+
 <script>
 
+// новое соединения для отображения комнат и уведомлений
 window.roomSocket = new WebSocket(
     "ws://" + window.location.host + "/ws/chat-rooms/" 
   );
 
 window.roomSocket.onmessage = function (e) {
   data = JSON.parse(e.data)
-  if (document.getElementById(data.room_id)) removeID(data.room_id);
+  document.getElementById(data.room_id)?.remove()
   addChatRoomRoom(data);
   document.getElementById('chatroom-count').innerHTML = `Комнат (${document.getElementById('chat-rooms').childElementCount})`;
 }
   
-window.roomSocket.onclose = function (e) {
-  console.log("The old websocket connection for rooms is closed");
-};
+window.roomSocket.onclose = function (e) {};
+window.roomSocket.addEventListener("open", (event) => {}); 
 
-window.roomSocket.addEventListener("open", (event) => {
-  console.log("The new websocket for rooms connection is open");
-}); 
-
-        
-function removeID(_id ){ 
-    var e=document.getElementById(_id);
-    if(e) e.remove();
-}
-
-        
-function newSocketChatlogConnection(id, name) {
-    
-  if (window.chatSocket) {
-    window.chatSocket.close();
-    clearChatlog();
-  };
-  
-  document.querySelector('#room-name').textContent = name;
-  if (document.querySelector(`#btn_${id}`)) removeID(`btn_${id}`);
-
-  window.chatSocket = new WebSocket(
-    "ws://" + window.location.host + "/ws/chat-log/" + id + "/"
-  );
-  window.chatSocket.onmessage = function (e) {
-    addChatlogMessage(JSON.parse(e.data))
-  };
-  window.chatSocket.onclose = function (e) {
-    console.log("The old websocket connection is closed");
-  };
-  window.chatSocket.addEventListener("open", (event) => {
-    console.log("The new websocket connection is open");
-  }); 
-}
 
 function addChatRoomRoom(data) {
   let room = document.createElement("div");
-  room.className = "btn btn-light shadow-sm rounded-0 room-btn border-top";
   room.id = data.room_id
   room.name = data.room_name
-  room.onclick = function (e) {
-    newSocketChatlogConnection(this.id, this.name);
-  };
-
+  room.className = "btn btn-light shadow-sm rounded-0 room-btn border-top";
   room.innerHTML = `
   <div class="row justify-content-around">
     <div class="col">
@@ -138,32 +101,51 @@ function addChatRoomRoom(data) {
     </div>
     <div class="col-3">
       <div class="d-flex flex-column text-center">
-      <div class="align-self-start text-muted m-auto">${data.last_message_time}</div>
+      <div class="align-self-start text-muted m-auto">${data.last_update}</div>
     ${data.notification ? (
         `<div class="text-primary" id="btn_${data.room_id}">*${data.notification}</div>
       </div>
     </div>`)
       : ''}
-    </div>`;    
+    </div>`;  
+  room.onclick = function (e) {
+    newSocketChatlogConnection(this.id, this.name);
+  };  
   document.querySelector('#chat-rooms').prepend(room)
 };
+
+function newSocketChatlogConnection(id, name) {
+  // закрываем старое соединение с групповым чатом
+  window.chatSocket?.close()
+  // чистим чат
+  document.querySelector("#chat-log").innerHTML = ""
+  // укащзываем имя в окне чата 
+  document.querySelector('#room-name').textContent = name;
+  // удаляем уведомления
+  document.querySelector(`#btn_${id}`)?.remove();
+
+  // создаем новое соединение с групопвым чатом
+  window.chatSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat-log/" + id + "/"
+  );
+  window.chatSocket.onmessage = function (e) {
+    addChatlogMessage(JSON.parse(e.data))
+  };
+  window.chatSocket.onclose = function (e) {};
+  window.chatSocket.addEventListener("open", (event) => {}); 
+}
 
 function addChatlogMessage(data) {
   last_message_block = document.querySelector("#chat-log").firstChild;
 
-  if (!last_message_block) {
-    createChatLogMessageBlock(data)
-    return
-  }
-
-  if (last_message_block.id == data.user) {
-    addChatLogMessageBlock(last_message_block, data)
+  if (last_message_block && last_message_block.id == data.user) {
+    extendChatLogMessageBlock(last_message_block, data)
   } else {
     createChatLogMessageBlock(data)
   };
 };
 
-function addChatLogMessageBlock(target, data) {
+function extendChatLogMessageBlock(target, data) {
   target.querySelector("#chat-log-message-block").innerHTML += `
       <div class="d-flex flex-column m-2 rounded-2 bg-light shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
@@ -216,11 +198,6 @@ function createChatLogMessageBlock(data) {
   document.querySelector("#chat-log").prepend(message_block);
 
 }
-
-function clearChatlog() {
-  document.querySelector("#chat-log").innerHTML = "";
-};
-
 
 </script>
 {% endblock %}

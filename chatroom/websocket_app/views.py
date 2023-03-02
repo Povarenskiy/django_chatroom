@@ -1,10 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse_lazy
 from .forms import CreateChatForm
-from users.forms import UserCreationForm
-from websocket_app.models import ChatRoom, Notification
 
 
 class ChatRoomView(LoginRequiredMixin, TemplateView):
@@ -25,6 +22,7 @@ class CreateView(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-
-
-
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.users.add(self.request.user)
+        return super().form_valid(form)

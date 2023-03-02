@@ -7,12 +7,12 @@ from channels.db import database_sync_to_async
 class ChatRoom(models.Model):
     users = models.ManyToManyField(User)
     name = models.CharField(max_length=200, blank=True, null=True)
-    last_update = models.DateTimeField(null=True, blank=True, default=None)
+    last_update = models.DateTimeField(auto_now_add=True)
 
     @database_sync_to_async
     def get_last_message(self):
         message = self.message_set.order_by('-create').first()
-        return message.text if message else None
+        return message.text if message else "Новая комната"
 
 
 
