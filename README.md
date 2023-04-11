@@ -1,6 +1,6 @@
 # Chatroom
 
-Онлайн мессенджер с регистрацией и историей переписок. 
+Онлайн мессенджер с регистрацией и историей переписок. Разработан с использованием технологии websocket соединений.
 
 Интерфейс:
 ![Image alt](https://github.com/Povarenskiy/django_chatroom/blob/main/interface.png)
