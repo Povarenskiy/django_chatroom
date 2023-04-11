@@ -7,25 +7,24 @@ function newSocketChatlogConnection(id, name) {
     document.querySelector('#room-name').textContent = name;
     // удаляем уведомления
     document.querySelector(`#btn_${id}`)?.remove();
-    
     // создаем новое соединение с групопвым чатом
     window.chatSocket = new WebSocket(
       "ws://" + window.location.host + "/ws/chat-log/" + id + "/"
     );
     window.chatSocket.onmessage = function (e) {
-      addChatlogMessage(JSON.parse(e.data))
+      addChatlogMessage(JSON.parse(e.data), name)
     };
     window.chatSocket.onclose = function (e) {};
     window.chatSocket.addEventListener("open", (event) => {}); 
 }
     
-function addChatlogMessage(data) {
+function addChatlogMessage(data, user) {
     last_message_block = document.querySelector("#chat-log").firstChild;
     
     if (last_message_block && last_message_block.id == data.user) {
       extendChatLogMessageBlock(last_message_block, data)
     } else {
-      createChatLogMessageBlock(data)
+      createChatLogMessageBlock(data, user)
     };
 };
     
@@ -46,7 +45,7 @@ function extendChatLogMessageBlock(target, data) {
 function createChatLogMessageBlock(data) {
     let message_block = document.createElement("div")
     message_block.className = "d-flex ";
-    message_block.className += (data.user === "{{ user }}") ? "align-self-end justify-content-end" : "align-self-start justify-content-start";
+    message_block.className += (data.is_author) ? "align-self-end justify-content-end" : "align-self-start justify-content-start";
     message_block.style = "width:fit-content; max-width: 75%;"
     message_block.id = data.user
     
@@ -78,8 +77,8 @@ function createChatLogMessageBlock(data) {
         
     message_block_message.append(message)
     message_block.append(message_block_message)
-    data.user == "{{ user }}"  ? message_block.append(message_block_picture) : message_block.prepend(message_block_picture);
-    document.querySelector("#chat-log").prepend(message_block);
+    data.is_author ? message_block.append(message_block_picture) : message_block.prepend(message_block_picture);
+    document.getElementById("chat-log").prepend(message_block);
     
 }
     

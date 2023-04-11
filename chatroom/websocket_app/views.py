@@ -10,9 +10,7 @@ class ChatRoomView(LoginRequiredMixin, TemplateView):
 
 
 class CreateView(LoginRequiredMixin, CreateView):
-    """
-    Отображение формы создания чата
-    """
+    """Отображение формы создания чата"""
     template_name = 'websocket_app/create.html'
     form_class = CreateChatForm
     success_url = reverse_lazy('chatroom')

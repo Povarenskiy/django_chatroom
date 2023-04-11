@@ -9,6 +9,7 @@ class MyBaseConsumer(AsyncWebsocketConsumer):
     async def build_message_data(self, message):
         data = {
                 'type': 'chat_message',
+                'is_author': message.user.username == self.auth_user.username,
                 'user': message.user.username,
                 'message_text': message.text,
                 'message_time': message.create.strftime(settings.MESSAGE_TIME_FORMAT),
@@ -24,8 +25,8 @@ class MyBaseConsumer(AsyncWebsocketConsumer):
             "type": "chat_message",
             "room_id": chatroom.id, 
             "room_name": chatroom.name, 
-            "last_message":  await chatroom.get_last_message(),
             "last_update": chatroom.last_update.strftime(settings.MESSAGE_TIME_FORMAT),
+            "last_message":  await chatroom.get_last_message(),
             "notification": await chatroom.notification_set.filter(user=reciever).acount()
         }            
         return data 

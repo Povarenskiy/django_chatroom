@@ -35,8 +35,9 @@ function addChatRoomRoom(data) {
     </div>`)
       : ''}
     </div>`;  
+  
   room.onclick = function (e) {
-    newSocketChatlogConnection(this.id, this.name);
+    newSocketChatlogConnection(room.id, room.name);
   };  
   document.querySelector('#chat-rooms').prepend(room)
 };
